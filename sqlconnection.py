@@ -15,16 +15,17 @@ import os
 
 class dbConnect():
     """ Establishes a connection to the database and facilitates database interactions """
-    config = {
-        # Connection data is obviously sensitive and I would not include this information in
-        # a production environment.  It is only here for ease of use during development.
-        'host':'localhost',
-        'database': 'amazonpricetracker',
-        'user':'root',
-        'password':'root',
-        'port':'3305'
-    }
+    
     def __init__(self):
+        config = {
+            # Connection data is obviously sensitive and I would not include this information in
+            # a production environment.  It is only here for ease of use during development.
+            'host':'localhost',
+            'database': 'amazonpricetracker',
+            'user':'root',
+            'password':'root',
+            'port':'3305'
+        }
         self.cnx = mysql.connector.connect(user=config['user'], password=config['password'], host=config['host'], database=config['database'], port=config['port'])
 
 def main():
@@ -48,10 +49,35 @@ def main():
         if int(choice) == 1:
             pass
         elif int(choice) == 2:
-            pass
+            user_verified = False
+            print("You are logging in. Please enter your login info:")
+            print("-" * num_hyphens)
+            email = input("Please enter your email address -> ")
+            password = input("Please enter your password -> ")
+            
+            cnx = dbConnect().cnx
+            cursor = cnx.cursor()
+            query = (f'''SELECT email, pass, first_name FROM users WHERE email="{email}";''') 
+            
+            data = email
+            result = cursor.execute(query, data)
+                        
+            for r in cursor:
+                if r[1] == password:
+                    name = r[2]
+                    user_verified = True
+                            
+            if user_verified:
+                print(f"Welcome back, {name}!")
+            else:
+                print("I could not find a user with those credentials.")
+                print("Please try again or register a new user.")
+            input("Press a key to continue -> ")
         elif int(choice) == 3:
             print('Until next time!')
             running = False
+        else:
+            continue
         
 
 if __name__ == "__main__":
