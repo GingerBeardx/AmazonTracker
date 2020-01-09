@@ -1,25 +1,59 @@
+#! /bin/python37
+"""
+A console app that tracks amazon prices and sends email notificatinos of drops in prices in order to
+facilitiate smart purchases
+
+Author: Eric Greenhalgh
+Project started: 1/5/2020
+"""
+
+# requirements module imports
 import mysql.connector
 
-class MySQLConnection():
-    def __init__(self, db):
-        config = {
-            'host':'localhost',
-            'database': db,
-            'user':'root',
-            'password':'root',
-            'port':'3305'
-        }
+#native module imports
+import os
+
+class dbConnect():
+    """ Establishes a connection to the database and facilitates database interactions """
+    config = {
+        # Connection data is obviously sensitive and I would not include this information in
+        # a production environment.  It is only here for ease of use during development.
+        'host':'localhost',
+        'database': 'amazonpricetracker',
+        'user':'root',
+        'password':'root',
+        'port':'3305'
+    }
+    def __init__(self):
         self.cnx = mysql.connector.connect(user=config['user'], password=config['password'], host=config['host'], database=config['database'], port=config['port'])
-    def query_db(self, query, data=None):
-        result = self.cnx.cursor().execute(text(query))
-        if query[0:6].lower() == 'insert':
-            self.cnx.commit()
-            return result.lastrowid
+
+def main():
+    """ This is the main program loop that will run when this file is executed """
+    num_hyphens = 90
+    running = True
+    while running:
+        os.system('cls' if os.name == 'nt' else 'clear')
+        print("-" * num_hyphens)
+        print("Welcome to The Amazon Price Tracker")
+        print("-" * num_hyphens)
+        print("Please choose one of the options below:")
+        print("-" * num_hyphens)
+        print("1) Register a New User")
+        print("2) Login a Registered User")
+        print("3) Exit Program")
+        print("-" * num_hyphens)
+        choice = input("Your choice -> ")
+        print("-" * num_hyphens)
+        
+        if int(choice) == 1:
+            pass
+        elif int(choice) == 2:
+            pass
+        elif int(choice) == 3:
+            print('Until next time!')
+            running = False
         
 
-def MySQLConnector(db):
-    return MySQLConnection(db)
-    
-mysqldb = MySQLConnector('AmazonPriceTracker')
-mysqldb.query_db('''INSERT INTO users (first_name, last_name, email, password, created_at, updated_at)
-                    VALUES ('Eric', 'Greenhalgh', 'egreenhalgh@gmail.com', '1234', NOW(), NOW())''')
+if __name__ == "__main__":
+    main()
+

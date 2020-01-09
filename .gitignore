@@ -2,3 +2,5 @@
 .vscode
 chromedriver.exe
 dummy.txt
+*.pyc
+scratch.py
