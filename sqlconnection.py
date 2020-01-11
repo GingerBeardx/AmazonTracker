@@ -27,6 +27,21 @@ class dbConnect():
             'port':'3305'
         }
         self.cnx = mysql.connector.connect(user=config['user'], password=config['password'], host=config['host'], database=config['database'], port=config['port'])
+        
+def login_user(email, password, user_verified):
+    cnx = dbConnect().cnx
+    cursor = cnx.cursor()
+    query = (f'''SELECT email, passwd, first_name FROM users WHERE email="{email}";''') 
+    
+    data = email
+    result = cursor.execute(query, data)
+    name = ""
+                
+    for r in cursor:
+        if r[1] == password:
+            name = r[2]
+            user_verified = True
+    return user_verified, name
 
 def main():
     """ This is the main program loop that will run when this file is executed """
@@ -55,17 +70,7 @@ def main():
             email = input("Please enter your email address -> ")
             password = input("Please enter your password -> ")
             
-            cnx = dbConnect().cnx
-            cursor = cnx.cursor()
-            query = (f'''SELECT email, pass, first_name FROM users WHERE email="{email}";''') 
-            
-            data = email
-            result = cursor.execute(query, data)
-                        
-            for r in cursor:
-                if r[1] == password:
-                    name = r[2]
-                    user_verified = True
+            user_verified, name = login_user(email, password, user_verified)
                             
             if user_verified:
                 print(f"Welcome back, {name}!")
